@@ -100,8 +100,10 @@ CREATE TABLE tasks (
     is_deleted BOOLEAN DEFAULT 0
 );
 
-##6. Setup Instructions
- '''# Clone repository
+## 6. Project Setup & Run Instructions
+
+```bash
+# Clone repository
 git clone <repository_url>
 cd todo_app
 
@@ -117,4 +119,3 @@ python todo/init_db.py
 
 # Run server
 python manage.py runserver
-'''
