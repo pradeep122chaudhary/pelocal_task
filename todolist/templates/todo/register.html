@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | Join Us</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Container with entrance animation -->
+    <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl border border-gray-100 animate-fade-in">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+                Create Account
+            </h2>
+            <p class="text-gray-500 mt-2">Join our community today</p>
+        </div>
+
+        <!-- Form -->
+        <form id="register-form" class="space-y-4">
+            
+            <!-- Username Field -->
+            <div class="space-y-1">
+                <label for="username" class="block text-sm font-medium text-gray-700 ml-1">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="johndoe123"
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                >
+                <p id="username-error" class="hidden text-xs text-red-500 mt-1 ml-1"></p>
+            </div>
+
+            <!-- Email Field -->
+            <div class="space-y-1">
+                <label for="email" class="block text-sm font-medium text-gray-700 ml-1">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="john@example.com"
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                >
+                <p id="email-error" class="hidden text-xs text-red-500 mt-1 ml-1"></p>
+            </div>
+
+            <!-- Password Field -->
+            <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium text-gray-700 ml-1">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                >
+                <p id="password-error" class="hidden text-xs text-red-500 mt-1 ml-1"></p>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="space-y-1">
+                <label for="confirm_password" class="block text-sm font-medium text-gray-700 ml-1">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                >
+                <p id="confirm-password-error" class="hidden text-xs text-red-500 mt-1 ml-1"></p>
+            </div>
+
+            <!-- Global Error Message -->
+            <div id="error-container" class="hidden bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                <p id="error" class="text-sm text-red-700"></p>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+                type="submit"
+                id="submit-btn"
+                class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 active:scale-[0.98] transform transition-all duration-200 shadow-lg shadow-blue-200 flex items-center justify-center space-x-2 mt-2"
+            >
+                <span id="btn-text">Register Now</span>
+                <span id="loader" class="hidden">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+            <p class="text-sm text-gray-600">
+                Already have an account?
+                <a href="/login-page/" class="text-blue-600 font-semibold hover:text-blue-800 transition underline-offset-4 hover:underline">
+                    Log in
+                </a>
+            </p>
+        </div>
+    </div>
+
+<script>
+document.getElementById("register-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const usernameEl = document.getElementById("username");
+    const emailEl = document.getElementById("email");
+    const passwordEl = document.getElementById("password");
+    const confirmPassEl = document.getElementById("confirm_password");
+
+    const username = usernameEl.value.trim();
+    const email = emailEl.value.trim();
+    const password = passwordEl.value;
+    const confirmPassword = confirmPassEl.value;
+
+    const errorEl = document.getElementById("error");
+    const errorContainer = document.getElementById("error-container");
+    const userError = document.getElementById("username-error");
+    const emailError = document.getElementById("email-error");
+    const passError = document.getElementById("password-error");
+    const confirmError = document.getElementById("confirm-password-error");
+    
+    const submitBtn = document.getElementById("submit-btn");
+    const btnText = document.getElementById("btn-text");
+    const loader = document.getElementById("loader");
+
+    // Reset UI
+    [errorContainer, userError, emailError, passError, confirmError].forEach(el => el.classList.add("hidden"));
+    [usernameEl, emailEl, passwordEl, confirmPassEl].forEach(el => el.classList.remove("border-red-500"));
+
+    // Validation
+    let hasError = false;
+
+    if (!username) {
+        userError.innerText = "Username is required";
+        userError.classList.remove("hidden");
+        usernameEl.classList.add("border-red-500");
+        hasError = true;
+    }
+
+    if (!email || !email.includes('@')) {
+        emailError.innerText = "Please enter a valid email";
+        emailError.classList.remove("hidden");
+        emailEl.classList.add("border-red-500");
+        hasError = true;
+    }
+
+    if (password.length < 6) {
+        passError.innerText = "Password must be at least 6 characters";
+        passError.classList.remove("hidden");
+        passwordEl.classList.add("border-red-500");
+        hasError = true;
+    }
+
+    if (password !== confirmPassword) {
+        confirmError.innerText = "Passwords do not match";
+        confirmError.classList.remove("hidden");
+        confirmPassEl.classList.add("border-red-500");
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    // Show loading state
+    submitBtn.disabled = true;
+    btnText.innerText = "Creating Account...";
+    loader.classList.remove("hidden");
+
+    try {
+        const response = await fetch("/api/auth/register/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password,
+                confirm_password: confirmPassword
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            errorEl.innerText = data.detail || "Registration failed. Please try again.";
+            errorContainer.classList.remove("hidden");
+            submitBtn.disabled = false;
+            btnText.innerText = "Register Now";
+            loader.classList.add("hidden");
+            return;
+        }
+
+        // Store token
+        localStorage.setItem("authToken", data.token);
+
+        // Success transition
+        submitBtn.classList.replace("bg-blue-600", "bg-green-500");
+        btnText.innerText = "Account Created!";
+        loader.classList.add("hidden");
+
+        setTimeout(() => {
+            window.location.href = "/login-page/";
+        }, 800);
+
+    } catch (err) {
+        errorEl.innerText = "Connection error. Please try again.";
+        errorContainer.classList.remove("hidden");
+        submitBtn.disabled = false;
+        btnText.innerText = "Register Now";
+        loader.classList.add("hidden");
+    }
+});
+</script>
+
+</body>
+</html>

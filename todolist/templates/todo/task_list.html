@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern To‑Do App</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#818cf8',
+                        accent: '#2dd4bf',
+                        danger: '#fb7185'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(45, 212, 191, 0.1) 0px, transparent 50%);
+            color: #f8fafc;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Evolution */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(129, 140, 248, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-row { 
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(129, 140, 248, 0.2);
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(129, 140, 248, 0.4);
+        }
+
+        /* Table Specifics */
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex justify-center">
+
+    <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar: Stats & Search -->
+        <aside class="w-full lg:w-80 space-y-6">
+            <div class="glass-panel rounded-[2rem] p-8 text-center lg:text-left">
+                <div class="mb-6">
+                    <h1 class="text-3xl font-black text-white tracking-tighter">
+                        TO<span class="text-primary italic text-shadow-glow">DO</span>
+                    </h1>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass-card p-4 rounded-2xl flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-400">TOTAL</span>
+                        <span class="text-xl font-black text-white" id="stat-total">0</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex items-center justify-between border-l-2 border-primary">
+                        <span class="text-xs font-bold text-slate-400">ACTIVE</span>
+                        <span class="text-xl font-black text-primary" id="stat-active">0</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex items-center justify-between border-l-2 border-accent">
+                        <span class="text-xs font-bold text-slate-400">DONE</span>
+                        <span class="text-xl font-black text-accent" id="stat-completed">0</span>
+                    </div>
+                </div>
+
+                <!-- NEW FEATURE: Search/Filter -->
+                <div class="mt-8">
+                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2 px-1">Quick Search</label>
+                    <div class="relative">
+                        <input 
+                            id="search-input"
+                            type="text" 
+                            placeholder="Filter index..."
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                            oninput="filterTasks()"
+                        >
+                        <svg class="w-4 h-4 absolute right-3 top-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Urgent Notification Panel -->
+            <div class="glass-panel rounded-[2rem] p-6 bg-red-500/5 border-red-500/10">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-2 h-2 rounded-full bg-danger animate-ping"></span>
+                    <h3 class="text-xs font-black text-danger uppercase tracking-widest">Priority Alert</h3>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                    You have <span class="text-white font-bold" id="stat-urgent">0</span> urgent nodes requiring immediate resolution.
+                </p>
+            </div>
+        </aside>
+
+        <!-- Main Content: Create & Table -->
+        <main class="flex-1 space-y-8">
+            
+            <!-- Create Section -->
+            <section class="glass-panel rounded-[2.5rem] p-8">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-6 flex items-center gap-3">
+                    <span class="p-1.5 rounded-lg bg-primary/20 text-primary">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                    </span>
+                    Push to TODO
+                </h2>
+                <form id="task-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <input id="title" type="text" placeholder="Operation name..." required class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none text-white text-sm placeholder-slate-600">
+                    </div>
+                    <div>
+                        <input id="due_date" type="date" class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none text-white text-sm">
+                    </div>
+                    <textarea id="description" placeholder="Metadata details..." rows="1" class="md:col-span-3 px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none text-white text-sm placeholder-slate-600"></textarea>
+                    
+                    <select id="priority" class="px-5 py-4 bg-slate-900 border border-white/10 rounded-2xl focus:outline-none text-white text-sm appearance-none cursor-pointer">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                    
+                    <select id="status" class="px-5 py-4 bg-slate-900 border border-white/10 rounded-2xl focus:outline-none text-white text-sm appearance-none cursor-pointer">
+                        <option value="pending" selected>Status: Queue</option>
+                        <option value="completed">Status: Resolved</option>
+                    </select>
+
+                    <button type="submit" class="bg-primary hover:bg-indigo-500 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl transition-all hover:shadow-[0_0_20px_rgba(129,140,248,0.4)] active:scale-95">
+                        Execute Push
+                    </button>
+                </form>
+            </section>
+
+            <!-- Table Section -->
+            <section class="glass-panel rounded-[2.5rem] overflow-hidden">
+                <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                    <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400">TO-DO List</h2>
+                    <span class="text-[10px] font-mono text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">LIVE_SYNC: OK</span>
+                </div>
+                <div class="table-scroll-container custom-scroll overflow-y-auto max-h-[500px]">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-slate-500 border-b border-white/5">
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-widest">Task Node</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-widest">Attributes</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-widest">Timeline</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-list" class="divide-y divide-white/5">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+<script>
+const API_BASE = "/tasks/";
+const TOKEN = localStorage.getItem("authToken");
+
+if (!TOKEN) {
+    window.location.href = "/login-page/";
+}
+
+function authHeaders() {
+    return {
+        "Authorization": "Token " + TOKEN,
+        "Content-Type": "application/json"
+    };
+}
+
+let allTasks = [];
+
+/* ------------------ BADGES & STATS (UNCHANGED) ------------------ */
+
+function priorityBadge(priority) {
+    const colors = {
+        low: 'text-indigo-400 border-indigo-400/20 bg-indigo-400/5',
+        medium: 'text-blue-400 border-blue-400/20 bg-blue-400/5',
+        high: 'text-orange-400 border-orange-400/20 bg-orange-400/5',
+        urgent: 'text-red-400 border-red-400/20 bg-red-400/5'
+    };
+    return `<span class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border ${colors[priority]}">${priority}</span>`;
+}
+
+function statusBadge(status) {
+    return status === 'completed'
+        ? '<span class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Resolved</span>'
+        : '<span class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-slate-500/10 text-slate-500 border border-white/10">In Queue</span>';
+}
+
+function updateStats(tasks) {
+    document.getElementById('stat-total').textContent = tasks.length;
+    document.getElementById('stat-active').textContent = tasks.filter(t => t.status !== 'completed').length;
+    document.getElementById('stat-completed').textContent = tasks.filter(t => t.status === 'completed').length;
+    document.getElementById('stat-urgent').textContent = tasks.filter(t => t.priority === 'urgent').length;
+}
+
+/* ------------------ SEARCH ------------------ */
+
+function filterTasks() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const filtered = allTasks.filter(task =>
+        task.title.toLowerCase().includes(query) ||
+        (task.description && task.description.toLowerCase().includes(query))
+    );
+    renderTasks(filtered);
+}
+
+/* ------------------ RENDER ------------------ */
+
+function renderTasks(tasks) {
+    const list = document.getElementById("task-list");
+    list.innerHTML = "";
+
+    if (!tasks.length) {
+        list.innerHTML = `<tr><td colspan="4" class="px-8 py-20 text-center text-slate-600 font-bold uppercase text-[10px] tracking-widest opacity-40">No matching nodes found</td></tr>`;
+        return;
+    }
+
+    tasks.forEach((task, index) => {
+        const tr = document.createElement("tr");
+        tr.className = `task-row ${task.status === 'completed' ? 'opacity-40' : ''}`;
+
+        tr.innerHTML = `
+            <td class="px-8 py-6">
+                <span class="font-bold ${task.status === 'completed' ? 'line-through' : ''}">${task.title}</span>
+            </td>
+            <td class="px-8 py-6">${priorityBadge(task.priority)} ${statusBadge(task.status)}</td>
+            <td class="px-8 py-6 text-xs">${task.due_date || 'N/A'}</td>
+            <td class="px-8 py-6 text-right">
+                ${task.status !== 'completed'
+                    ? `<button onclick="completeTask(${task.id})">✔</button>`
+                    : ''}
+                <button onclick="deleteTask(${task.id})">🗑</button>
+            </td>
+        `;
+        list.appendChild(tr);
+    });
+}
+
+/* ------------------ API CALLS (FIXED) ------------------ */
+
+async function fetchTasks() {
+    const res = await fetch(API_BASE, { headers: authHeaders() });
+
+    if (res.status === 401) {
+        localStorage.removeItem("authToken");
+        window.location.href = "/login-page/";
+        return;
+    }
+
+    allTasks = await res.json();
+    updateStats(allTasks);
+    renderTasks(allTasks);
+}
+
+async function createTask(event) {
+    event.preventDefault();
+
+    const payload = {
+        title: title.value,
+        description: description.value,
+        due_date: due_date.value,
+        priority: priority.value,
+        status: status.value
+    };
+
+    const res = await fetch(API_BASE, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+    });
+
+    if (res.status === 401) {
+        window.location.href = "/login-page/";
+        return;
+    }
+
+    document.getElementById("task-form").reset();
+    fetchTasks();
+}
+
+async function completeTask(id) {
+    await fetch(`${API_BASE}${id}/`, {
+        method: "PATCH",
+        headers: authHeaders(),
+        body: JSON.stringify({ status: "completed" })
+    });
+    fetchTasks();
+}
+
+async function deleteTask(id) {
+    await fetch(`${API_BASE}${id}/`, {
+        method: "DELETE",
+        headers: authHeaders()
+    });
+    fetchTasks();
+}
+
+/* ------------------ INIT ------------------ */
+
+fetchTasks();
+document.getElementById("task-form").addEventListener("submit", createTask);
+</script>
+
+
+</body>
+</html>
