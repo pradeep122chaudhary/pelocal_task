@@ -1,89 +1,90 @@
-# 📝 To-Do List Application  
-**Python Developer Assignment – Pelocal Fintech Pvt. Ltd.**
+This is a clean, professional `README.md` file tailored for your GitHub repository. It highlights the unique constraints of your project (Raw SQL and no Generic ViewSets) which is crucial for demonstrating your technical depth to the recruiters at Pelocal Fintech.
 
 ---
 
-## 1. Project Overview
+# 📝 To-Do List Application (Python Developer Assignment)
 
-This project is a **To-Do List web application** developed using **Python, Django, and Django REST Framework**.  
-It provides **RESTful APIs** for managing tasks and **HTML templates** for user interaction.
-
-The application strictly follows the assignment constraints:
-
-- ❌ Django ORM is **not used**
-- ❌ Generic ViewSets are **not used**
-- ✅ Raw SQL is used for all database operations
-- ✅ REST APIs + Template integration
-- ✅ SQLite database
+A robust **To-Do List web application** built with **Django** and **Django REST Framework (DRF)**. This project demonstrates the ability to handle database operations using **Raw SQL** instead of the traditional Django ORM, ensuring high performance and deep understanding of database interactions.
 
 ---
 
-## 2. Tech Stack
+## 🚀 Project Overview
+
+This application provides a seamless blend of **RESTful APIs** for programmatic task management and **HTML templates** for a user-friendly web interface.
+
+### Key Constraints Followed:
+
+* ❌ **No Django ORM:** All database interactions are handled via `connection.cursor`.
+* ❌ **No Generic ViewSets:** APIs are built using `APIView` for granular control.
+* ✅ **Raw SQL:** Custom queries for CRUD and table initialization.
+* ✅ **Hybrid Auth:** Token-based for APIs and Session-based for UI.
+
+---
+
+## 🛠 Tech Stack
 
 | Layer | Technology |
-|-----|-----------|
-| Language | Python 3.x |
-| Backend | Django |
-| API Framework | Django REST Framework |
-| Database | SQLite |
-| Database Access | Raw SQL (`connection.cursor`) |
-| Authentication | DRF Token Auth (APIs), Django Session Auth (Templates) |
-| Frontend | HTML + Tailwind CSS |
-| Testing | pytest, pytest-django |
+| --- | --- |
+| **Language** | Python 3.x |
+| **Backend** | Django |
+| **API Framework** | Django REST Framework (DRF) |
+| **Database** | SQLite |
+| **Database Access** | Raw SQL (`connection.cursor`) |
+| **Authentication** | DRF Token Auth & Django Session Auth |
+| **Frontend** | HTML + Tailwind CSS |
+| **Testing** | pytest, pytest-django |
 
 ---
 
-## 3. Features Implemented
+## ✨ Features
 
-### Authentication
-- User registration
-- User login
-- Token-based authentication for APIs
-- Session-based authentication for template pages
-- Secure logout
+### 🔐 Authentication
 
-### Task Management
-- Create task
-- Retrieve tasks (user-specific)
-- Update task
-- Delete task (soft delete)
-- Task priority & status support
+* **User Management:** Registration and Login systems.
+* **Dual-Auth:** Secure token generation for API clients and session management for browser users.
+* **Logout:** Secure session invalidation.
 
-### UI
-- Login page
-- Register page
-- Task dashboard (protected)
-- Tasks created/updated via APIs from templates
+### 📋 Task Management
+
+* **Full CRUD:** Create, Read, Update, and Delete tasks.
+* **Soft Delete:** Tasks are marked as deleted rather than removed from the database.
+* **Prioritization:** Assign tasks as `low`, `medium`, `high`, or `urgent`.
+* **Status Tracking:** Toggle between `pending` and `completed`.
+
+### 🖥 User Interface
+
+* **Responsive Dashboard:** A clean UI built with Tailwind CSS.
+* **Interactive Forms:** Real-time updates via API integration within templates.
 
 ---
 
-## 4. Project Structure
+## 📂 Project Structure
+
+```text
 todo/
 ├── views/
-│ ├── page_views.py # Template views (Home, Login, Register)
-│ ├── auth_api_views.py # Auth APIs (Register/Login/Logout)
-│ └── task_api_views.py # Task CRUD APIs (Raw SQL)
-│
+│   ├── page_views.py       # Template rendering (Login, Register, Dashboard)
+│   ├── auth_api_views.py   # Authentication Logic (Register/Login/Logout)
+│   └── task_api_views.py   # Task CRUD Logic (Executing Raw SQL)
 ├── templates/
-│ └── todo/
-│ ├── login.html
-│ ├── register.html
-│ └── task_list.html
-│
-├── serializers.py # DRF Serializer (non-ORM)
-├── init_db.py # Raw SQL table creation
-├── db_utils.py # dictfetch helpers
-├── urls.py
-├── tests/ # pytest test cases
-├── requirements.txt
-└── README.md
+│   └── todo/
+│       ├── login.html      # User Login Page
+│       ├── register.html   # User Registration Page
+│       └── task_list.html  # Main Task Dashboard
+├── serializers.py          # DRF Serializers (Manual data mapping)
+├── init_db.py              # Raw SQL script for Table Initialization
+├── db_utils.py             # Helper functions (e.g., dictfetch)
+├── urls.py                 # URL routing for both APIs and Pages
+├── tests/                  # Automated test cases
+└── requirements.txt        # Project dependencies
 
+```
 
 ---
 
-## 5. Database Design (Raw SQL)
+## 🗄 Database Design
 
-### `tasks` Table Schema
+The application uses a custom-built `tasks` table. Below is the schema executed during initialization:
 
 ```sql
 CREATE TABLE tasks (
@@ -100,22 +101,56 @@ CREATE TABLE tasks (
     is_deleted BOOLEAN DEFAULT 0
 );
 
-## 6. Project Setup & Run Instructions
+```
+
+---
+
+## ⚙️ Setup & Installation
+
+Follow these steps to get the project running locally:
+
+### 1. Clone the Repository
 
 ```bash
-# Clone repository
-git clone <repository_url>
+git clone <your-repository-url>
 cd todo_app
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+```
 
-# Install dependencies
+### 2. Set Up Virtual Environment
+
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+
+```
+
+### 3. Install Dependencies
+
+```bash
 pip install -r requirements.txt
 
-# Create database tables
+```
+
+### 4. Initialize Database
+
+Since we are not using ORM migrations, run the custom initialization script:
+
+```bash
 python todo/init_db.py
 
-# Run server
+```
+
+### 5. Run the Server
+
+```bash
 python manage.py runserver
+
+```
+
+Access the app at `http://127.0.0.1:8000/`.
+
+---
